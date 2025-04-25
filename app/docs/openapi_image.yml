@@ -1,0 +1,151 @@
+openapi: 3.0.3
+info:
+  title: Resivate API - Images
+  description: API endpoints for managing images
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Development server
+paths:
+  /api/images:
+    get:
+      operationId: read_images
+      summary: Get All Images
+      description: Retrieve a list of all images
+      parameters:
+        - name: skip
+          in: query
+          description: Number of records to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: Maximum number of records to return
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Image'
+    post:
+      operationId: create_image
+      summary: Create Image
+      description: Create a new image
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageCreate'
+      responses:
+        '201':
+          description: Image created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Image'
+  /api/images/{image_id}:
+    get:
+      operationId: read_image
+      summary: Get Image
+      description: Get a specific image by ID
+      parameters:
+        - name: image_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Image ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Image'
+        '404':
+          description: Image not found
+    put:
+      operationId: update_image
+      summary: Update Image
+      description: Update an existing image
+      parameters:
+        - name: image_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Image ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageUpdate'
+      responses:
+        '200':
+          description: Image updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Image'
+        '404':
+          description: Image not found
+    delete:
+      operationId: delete_image
+      summary: Delete Image
+      description: Delete an image
+      parameters:
+        - name: image_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Image ID
+      responses:
+        '204':
+          description: Image deleted
+        '404':
+          description: Image not found
+components:
+  schemas:
+    ImageBase:
+      type: object
+      required:
+        - src
+      properties:
+        src:
+          type: string
+          description: Image source URL or path
+          maxLength: 512
+          minLength: 1
+    ImageCreate:
+      allOf:
+        - $ref: '#/components/schemas/ImageBase'
+    ImageUpdate:
+      type: object
+      properties:
+        src:
+          type: string
+          description: Image source URL or path
+          maxLength: 512
+          minLength: 1
+    Image:
+      allOf:
+        - $ref: '#/components/schemas/ImageBase'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+              description: Image ID 
