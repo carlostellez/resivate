@@ -1,0 +1,160 @@
+openapi: 3.0.3
+info:
+  title: Resivate API - FAQs
+  description: API endpoints for managing Frequently Asked Questions
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Development server
+paths:
+  /api/faqs:
+    get:
+      operationId: read_faqs
+      summary: Get All FAQs
+      description: Retrieve a list of all FAQs
+      parameters:
+        - name: skip
+          in: query
+          description: Number of records to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: Maximum number of records to return
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FAQ'
+    post:
+      operationId: create_faq
+      summary: Create FAQ
+      description: Create a new FAQ
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FAQCreate'
+      responses:
+        '201':
+          description: FAQ created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FAQ'
+  /api/faqs/{faq_id}:
+    get:
+      operationId: read_faq
+      summary: Get FAQ
+      description: Get a specific FAQ by ID
+      parameters:
+        - name: faq_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: FAQ ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FAQ'
+        '404':
+          description: FAQ not found
+    put:
+      operationId: update_faq
+      summary: Update FAQ
+      description: Update an existing FAQ
+      parameters:
+        - name: faq_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: FAQ ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FAQUpdate'
+      responses:
+        '200':
+          description: FAQ updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FAQ'
+        '404':
+          description: FAQ not found
+    delete:
+      operationId: delete_faq
+      summary: Delete FAQ
+      description: Delete a FAQ
+      parameters:
+        - name: faq_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: FAQ ID
+      responses:
+        '204':
+          description: FAQ deleted
+        '404':
+          description: FAQ not found
+components:
+  schemas:
+    FAQBase:
+      type: object
+      required:
+        - question
+        - answer
+      properties:
+        question:
+          type: string
+          description: FAQ question
+          maxLength: 255
+          minLength: 1
+        answer:
+          type: string
+          description: FAQ answer
+          minLength: 1
+    FAQCreate:
+      allOf:
+        - $ref: '#/components/schemas/FAQBase'
+    FAQUpdate:
+      type: object
+      properties:
+        question:
+          type: string
+          description: FAQ question
+          maxLength: 255
+          minLength: 1
+        answer:
+          type: string
+          description: FAQ answer
+          minLength: 1
+    FAQ:
+      allOf:
+        - $ref: '#/components/schemas/FAQBase'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+              description: FAQ ID 

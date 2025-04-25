@@ -13,4 +13,5 @@ Base = declarative_base()
 # This is commented out to avoid circular imports
 # Uncomment and add new models as they are created
 # from app.models.category import Category  # noqa
-# from app.models.image import Image  # noqa 
+# from app.models.image import Image  # noqa
+# from app.models.faq import FAQ  # noqa 

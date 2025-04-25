@@ -6,7 +6,7 @@ This module initializes the FastAPI application and includes all routers.
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 
-from app.api.endpoints import category, image
+from app.api.endpoints import category, image, faq
 from app.core.config import settings
 
 app = FastAPI(
@@ -22,6 +22,9 @@ app.include_router(
 )
 app.include_router(
     image.router, prefix=f"{settings.API_V1_STR}/images", tags=["images"]
+)
+app.include_router(
+    faq.router, prefix=f"{settings.API_V1_STR}/faqs", tags=["faqs"]
 )
 
 

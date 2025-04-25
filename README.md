@@ -11,6 +11,7 @@ A FastAPI project for resivate, developed with Python 3.13 with MySQL database i
 - API documentation with OpenAPI specification
 - Category management API with CRUD operations
 - Image management API with CRUD operations
+- FAQ management API with CRUD operations
 
 ## Installation
 
@@ -61,7 +62,8 @@ resivate/
 │   ├── api/
 │   │   └── endpoints/
 │   │       ├── category.py
-│   │       └── image.py
+│   │       ├── image.py
+│   │       └── faq.py
 │   ├── core/
 │   │   ├── config.py
 │   │   └── deps.py
@@ -70,16 +72,20 @@ resivate/
 │   │   └── session.py
 │   ├── models/
 │   │   ├── category.py
-│   │   └── image.py
+│   │   ├── image.py
+│   │   └── faq.py
 │   ├── schemas/
 │   │   ├── category.py
-│   │   └── image.py
+│   │   ├── image.py
+│   │   └── faq.py
 │   ├── docs/
 │   │   ├── openapi.yml
-│   │   └── openapi_image.yml
+│   │   ├── openapi_image.yml
+│   │   └── openapi_faq.yml
 │   ├── tests/
 │   │   ├── test_category.py
-│   │   └── test_image.py
+│   │   ├── test_image.py
+│   │   └── test_faq.py
 │   └── main.py
 ├── alembic/
 │   ├── versions/
@@ -112,3 +118,13 @@ resivate/
 | POST | `/api/images` | Create a new image |
 | PUT | `/api/images/{id}` | Update an image |
 | DELETE | `/api/images/{id}` | Delete an image |
+
+### FAQ API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/faqs` | List all FAQs |
+| GET | `/api/faqs/{id}` | Get a FAQ by ID |
+| POST | `/api/faqs` | Create a new FAQ |
+| PUT | `/api/faqs/{id}` | Update a FAQ |
+| DELETE | `/api/faqs/{id}` | Delete a FAQ |

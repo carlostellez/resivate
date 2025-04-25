@@ -6,6 +6,7 @@ This script initializes all database tables based on SQLAlchemy models.
 from app.database.base import Base
 from app.models.category import Category  # noqa
 from app.models.image import Image  # noqa
+from app.models.faq import FAQ  # noqa
 from sqlalchemy import create_engine
 
 from app.core.config import settings
