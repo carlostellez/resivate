@@ -5,7 +5,7 @@ This module defines Pydantic models for Type data validation and serialization.
 """
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 
 from app.schemas.image import Image
 
@@ -42,16 +42,14 @@ class TypeInDBBase(TypeBase):
     Schema for Type as stored in the database
     """
     id: int = Field(..., description="Unique identifier")
-
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class TypeSchema(TypeInDBBase):
     """
     Schema for Type returned by the API
     """
-    pass
+    img: Optional[Image] = Field(None, description="Associated image object")
 
 
 class TypeInDB(TypeInDBBase):

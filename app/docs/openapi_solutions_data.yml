@@ -1,0 +1,202 @@
+openapi: 3.0.3
+info:
+  title: Resivate API - SolutionsData
+  description: API endpoints for managing solutions data
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Development server
+paths:
+  /api/solutions-data:
+    get:
+      operationId: read_solutions_data_items
+      summary: Get All Solutions Data Items
+      description: Retrieve a list of all solutions data items
+      parameters:
+        - name: skip
+          in: query
+          description: Number of records to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: Maximum number of records to return
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SolutionsDataList'
+    post:
+      operationId: create_solutions_data
+      summary: Create Solutions Data
+      description: Create a new solutions data item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolutionsDataCreate'
+      responses:
+        '201':
+          description: Solutions data item created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SolutionsData'
+  /api/solutions-data/{item_id}:
+    get:
+      operationId: read_solutions_data
+      summary: Get Solutions Data
+      description: Get a specific solutions data item by ID
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Solutions data item ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SolutionsData'
+        '404':
+          description: Solutions data item not found
+    put:
+      operationId: update_solutions_data
+      summary: Update Solutions Data
+      description: Update an existing solutions data item
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Solutions data item ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolutionsDataUpdate'
+      responses:
+        '200':
+          description: Solutions data item updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SolutionsData'
+        '404':
+          description: Solutions data item not found
+    delete:
+      operationId: delete_solutions_data
+      summary: Delete Solutions Data
+      description: Delete a solutions data item
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Solutions data item ID
+      responses:
+        '200':
+          description: Solutions data item deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SolutionsData'
+        '404':
+          description: Solutions data item not found
+components:
+  schemas:
+    SolutionsDataBase:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          description: Title of the solution
+          maxLength: 100
+          minLength: 1
+          example: "Enterprise Solution"
+        pricing:
+          type: string
+          description: Pricing information
+          maxLength: 100
+          example: "$199.99/month"
+        img_id:
+          type: integer
+          nullable: true
+          description: ID of the associated image
+    SolutionsDataCreate:
+      allOf:
+        - $ref: '#/components/schemas/SolutionsDataBase'
+      example:
+        title: "Enterprise Solution"
+        pricing: "$199.99/month"
+        img_id: 1
+    SolutionsDataUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the solution
+          maxLength: 100
+          minLength: 1
+        pricing:
+          type: string
+          description: Pricing information
+          maxLength: 100
+        img_id:
+          type: integer
+          nullable: true
+          description: ID of the associated image
+    SolutionsData:
+      allOf:
+        - $ref: '#/components/schemas/SolutionsDataBase'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+              description: Solutions data item ID
+            img:
+              $ref: '#/components/schemas/Image'
+    SolutionsDataList:
+      type: object
+      required:
+        - items
+        - count
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SolutionsData'
+        count:
+          type: integer
+          description: Total number of items
+    Image:
+      type: object
+      required:
+        - id
+        - src
+      properties:
+        id:
+          type: integer
+          description: Image ID
+        src:
+          type: string
+          description: Image source URL or path 

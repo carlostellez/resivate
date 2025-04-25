@@ -115,7 +115,10 @@ resivate/
 │   │       ├── faq.py
 │   │       ├── menu_option.py
 │   │       ├── option.py
-│   │       └── plan.py
+│   │       ├── plan.py
+│   │       ├── type.py
+│   │       ├── processing_info.py
+│   │       └── solutions_data.py
 │   ├── core/
 │   │   ├── config.py
 │   │   └── deps.py
@@ -129,7 +132,10 @@ resivate/
 │   │   ├── faq.py
 │   │   ├── menu_option.py
 │   │   ├── option.py
-│   │   └── plan.py
+│   │   ├── plan.py
+│   │   ├── type.py
+│   │   ├── processing_info.py
+│   │   └── solutions_data.py
 │   ├── schemas/
 │   │   ├── category.py
 │   │   ├── image.py
@@ -137,7 +143,9 @@ resivate/
 │   │   ├── menu_option.py
 │   │   ├── option.py
 │   │   ├── plan.py
-│   │   └── type.py
+│   │   ├── type.py
+│   │   ├── processing_info.py
+│   │   └── solutions_data.py
 │   ├── docs/
 │   │   ├── openapi.yml
 │   │   ├── openapi_image.yml
@@ -145,7 +153,9 @@ resivate/
 │   │   ├── openapi_menu_option.yml
 │   │   ├── openapi_option.yml
 │   │   ├── openapi_plan.yml
-│   │   └── openapi_type.yml
+│   │   ├── openapi_type.yml
+│   │   ├── openapi_processing_info.yml
+│   │   └── openapi_solutions_data.yml
 │   ├── tests/
 │   │   ├── test_category.py
 │   │   ├── test_image.py
@@ -153,7 +163,9 @@ resivate/
 │   │   ├── test_menu_option.py
 │   │   ├── test_option.py
 │   │   ├── test_plan.py
-│   │   └── test_type.py
+│   │   ├── test_type.py
+│   │   ├── test_processing_info.py
+│   │   └── test_solutions_data.py
 │   └── main.py
 ├── alembic/
 │   ├── versions/
@@ -289,3 +301,53 @@ This plan structure provides pricing information with customizable button option
 ```
 
 This type structure includes a title, description, and an array of features. It also supports an optional relationship with an image, allowing service types to be visually represented.
+
+### Processing Info API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/processing-info` | List all processing information items |
+| GET | `/api/processing-info/{id}` | Get a processing info item by ID |
+| POST | `/api/processing-info` | Create a new processing info item |
+| PUT | `/api/processing-info/{id}` | Update a processing info item |
+| DELETE | `/api/processing-info/{id}` | Delete a processing info item |
+
+#### Example Processing Info
+
+```json
+{
+  "title": "Standard Processing",
+  "description": "Our standard processing service with average turnaround time",
+  "pricing": "$99.99/month",
+  "id": 1
+}
+```
+
+This processing information structure provides details about processing services offered, including title, description, and pricing information in a clear, customer-friendly format.
+
+### Solutions Data API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/solutions-data` | List all solutions data items |
+| GET | `/api/solutions-data/{id}` | Get a solutions data item by ID |
+| POST | `/api/solutions-data` | Create a new solutions data item |
+| PUT | `/api/solutions-data/{id}` | Update a solutions data item |
+| DELETE | `/api/solutions-data/{id}` | Delete a solutions data item |
+
+#### Example Solutions Data
+
+```json
+{
+  "title": "Enterprise Solution",
+  "pricing": "$199.99/month",
+  "img_id": 1,
+  "id": 1,
+  "img": {
+    "id": 1,
+    "src": "https://example.com/solution1.jpg"
+  }
+}
+```
+
+This solutions data structure provides information about different solution offerings, including title, pricing, and an associated image for visual representation.

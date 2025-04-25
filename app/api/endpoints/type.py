@@ -39,7 +39,7 @@ def read_types(
             "description": type_item.description,
             "features": type_item.features,
             "img_id": type_item.img_id,
-            "img": type_item.img
+            "img": type_item.image
         } 
         for type_item in types
     ]
@@ -77,7 +77,7 @@ def create_type(
         "description": type_obj.description,
         "features": type_obj.features,
         "img_id": type_obj.img_id,
-        "img": type_obj.img
+        "img": type_obj.image
     }
 
 
@@ -113,7 +113,7 @@ def read_type(
         "description": type_obj.description,
         "features": type_obj.features,
         "img_id": type_obj.img_id,
-        "img": type_obj.img
+        "img": type_obj.image
     }
 
 
@@ -164,7 +164,7 @@ def update_type(
         "description": type_obj.description,
         "features": type_obj.features,
         "img_id": type_obj.img_id,
-        "img": type_obj.img
+        "img": type_obj.image
     }
 
 

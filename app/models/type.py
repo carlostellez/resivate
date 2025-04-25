@@ -10,7 +10,7 @@ from sqlalchemy import Column, Integer, String, Text, ForeignKey
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
-from app.database.base_class import Base
+from app.database.base import Base
 
 
 class Type(Base):
@@ -33,8 +33,8 @@ class Type(Base):
     _features = Column("features", Text, nullable=True)
     img_id = Column(Integer, ForeignKey("images.id"), nullable=True)
     
-    # Relationships
-    image = relationship("Image", back_populates="types")
+    # Relationships - use string reference to avoid circular imports
+    image = relationship("Image", back_populates="types", foreign_keys=[img_id])
 
     @hybrid_property
     def features(self) -> List[str]:

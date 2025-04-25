@@ -1,0 +1,187 @@
+openapi: 3.0.3
+info:
+  title: Resivate API - ProcessingInfo
+  description: API endpoints for managing processing information
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Development server
+paths:
+  /api/processing-info:
+    get:
+      operationId: read_processing_infos
+      summary: Get All Processing Info Items
+      description: Retrieve a list of all processing information items
+      parameters:
+        - name: skip
+          in: query
+          description: Number of records to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: Maximum number of records to return
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessingInfoList'
+    post:
+      operationId: create_processing_info
+      summary: Create Processing Info
+      description: Create a new processing information item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessingInfoCreate'
+      responses:
+        '201':
+          description: Processing information item created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessingInfo'
+  /api/processing-info/{item_id}:
+    get:
+      operationId: read_processing_info
+      summary: Get Processing Info
+      description: Get a specific processing information item by ID
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Processing info item ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessingInfo'
+        '404':
+          description: Processing info item not found
+    put:
+      operationId: update_processing_info
+      summary: Update Processing Info
+      description: Update an existing processing information item
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Processing info item ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessingInfoUpdate'
+      responses:
+        '200':
+          description: Processing info item updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessingInfo'
+        '404':
+          description: Processing info item not found
+    delete:
+      operationId: delete_processing_info
+      summary: Delete Processing Info
+      description: Delete a processing information item
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Processing info item ID
+      responses:
+        '200':
+          description: Processing info item deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessingInfo'
+        '404':
+          description: Processing info item not found
+components:
+  schemas:
+    ProcessingInfoBase:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          description: Title of the processing information
+          maxLength: 100
+          minLength: 1
+          example: "Standard Processing"
+        description:
+          type: string
+          description: Detailed description of the processing
+          example: "Our standard processing service"
+        pricing:
+          type: string
+          description: Pricing information
+          maxLength: 100
+          example: "$99.99/month"
+    ProcessingInfoCreate:
+      allOf:
+        - $ref: '#/components/schemas/ProcessingInfoBase'
+      example:
+        title: "Standard Processing"
+        description: "Our standard processing service"
+        pricing: "$99.99/month"
+    ProcessingInfoUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the processing information
+          maxLength: 100
+          minLength: 1
+        description:
+          type: string
+          description: Detailed description of the processing
+        pricing:
+          type: string
+          description: Pricing information
+          maxLength: 100
+    ProcessingInfo:
+      allOf:
+        - $ref: '#/components/schemas/ProcessingInfoBase'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+              description: Processing info item ID
+    ProcessingInfoList:
+      type: object
+      required:
+        - items
+        - count
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProcessingInfo'
+        count:
+          type: integer
+          description: Total number of items 

@@ -3,10 +3,20 @@ Script to create database tables.
 
 This script initializes all database tables based on SQLAlchemy models.
 """
-# Import base_class to ensure all models are properly registered
-# This will automatically import all models registered in base_class.py
-from app.database.base_class import Base
+# Import Base class
+from app.database.base import Base
 from sqlalchemy import create_engine
+
+# Import all models explicitly to ensure they are registered with SQLAlchemy
+from app.models.category import Category
+from app.models.image import Image
+from app.models.faq import FAQ
+from app.models.menu_option import MenuOption
+from app.models.option import Option
+from app.models.plan import Plan
+from app.models.type import Type  # This must be imported after Image due to FK dependency
+from app.models.processing_info import ProcessingInfo
+from app.models.solutions_data import SolutionsData  # This must be imported after Image due to FK dependency
 
 from app.core.config import settings
 
