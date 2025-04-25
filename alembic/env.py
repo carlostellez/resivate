@@ -9,7 +9,8 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 from app.core.config import settings
-from app.database.base import Base
+# Import from base_class instead of base to ensure all models are loaded
+from app.database.base_class import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

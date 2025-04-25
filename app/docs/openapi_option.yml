@@ -1,0 +1,167 @@
+openapi: 3.0.3
+info:
+  title: Resivate API - Options
+  description: API endpoints for managing options
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Development server
+paths:
+  /api/options:
+    get:
+      operationId: read_options
+      summary: Get All Options
+      description: Retrieve a list of all options
+      parameters:
+        - name: skip
+          in: query
+          description: Number of records to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: Maximum number of records to return
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Option'
+    post:
+      operationId: create_option
+      summary: Create Option
+      description: Create a new option
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OptionCreate'
+      responses:
+        '201':
+          description: Option created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Option'
+  /api/options/{option_id}:
+    get:
+      operationId: read_option
+      summary: Get Option
+      description: Get a specific option by ID
+      parameters:
+        - name: option_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Option ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Option'
+        '404':
+          description: Option not found
+    put:
+      operationId: update_option
+      summary: Update Option
+      description: Update an existing option
+      parameters:
+        - name: option_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Option ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OptionUpdate'
+      responses:
+        '200':
+          description: Option updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Option'
+        '404':
+          description: Option not found
+    delete:
+      operationId: delete_option
+      summary: Delete Option
+      description: Delete an option
+      parameters:
+        - name: option_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Option ID
+      responses:
+        '204':
+          description: Option deleted
+        '404':
+          description: Option not found
+components:
+  schemas:
+    OptionBase:
+      type: object
+      required:
+        - name
+        - icon
+      properties:
+        name:
+          type: string
+          description: Option name
+          maxLength: 255
+          minLength: 1
+          example: "Configuration"
+        icon:
+          type: string
+          description: Option icon
+          maxLength: 255
+          minLength: 1
+          example: "settings"
+    OptionCreate:
+      allOf:
+        - $ref: '#/components/schemas/OptionBase'
+      example:
+        name: "Configuration"
+        icon: "settings"
+    OptionUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Option name
+          maxLength: 255
+          minLength: 1
+        icon:
+          type: string
+          description: Option icon
+          maxLength: 255
+          minLength: 1
+    Option:
+      allOf:
+        - $ref: '#/components/schemas/OptionBase'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+              description: Option ID 

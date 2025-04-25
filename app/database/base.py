@@ -9,9 +9,5 @@ from sqlalchemy.ext.declarative import declarative_base
 # Create Base class for SQLAlchemy models
 Base = declarative_base()
 
-# Import all models here to register them with SQLAlchemy
-# This is commented out to avoid circular imports
-# Uncomment and add new models as they are created
-# from app.models.category import Category  # noqa
-# from app.models.image import Image  # noqa
-# from app.models.faq import FAQ  # noqa 
+# DO NOT import models here to avoid circular imports
+# Models will be imported in a separate module (base_class.py) 

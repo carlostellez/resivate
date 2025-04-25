@@ -1,0 +1,171 @@
+openapi: 3.0.3
+info:
+  title: Resivate API - Menu Options
+  description: API endpoints for managing menu options
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Development server
+paths:
+  /api/menu-options:
+    get:
+      operationId: read_menu_options
+      summary: Get All Menu Options
+      description: Retrieve a list of all menu options
+      parameters:
+        - name: skip
+          in: query
+          description: Number of records to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: Maximum number of records to return
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuOption'
+    post:
+      operationId: create_menu_option
+      summary: Create Menu Option
+      description: Create a new menu option
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuOptionCreate'
+      responses:
+        '201':
+          description: Menu option created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuOption'
+  /api/menu-options/{menu_option_id}:
+    get:
+      operationId: read_menu_option
+      summary: Get Menu Option
+      description: Get a specific menu option by ID
+      parameters:
+        - name: menu_option_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Menu Option ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuOption'
+        '404':
+          description: Menu option not found
+    put:
+      operationId: update_menu_option
+      summary: Update Menu Option
+      description: Update an existing menu option
+      parameters:
+        - name: menu_option_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Menu Option ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuOptionUpdate'
+      responses:
+        '200':
+          description: Menu option updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuOption'
+        '404':
+          description: Menu option not found
+    delete:
+      operationId: delete_menu_option
+      summary: Delete Menu Option
+      description: Delete a menu option
+      parameters:
+        - name: menu_option_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Menu Option ID
+      responses:
+        '204':
+          description: Menu option deleted
+        '404':
+          description: Menu option not found
+components:
+  schemas:
+    MenuOptionBase:
+      type: object
+      required:
+        - type
+        - items
+      properties:
+        type:
+          type: string
+          description: Menu option type
+          maxLength: 255
+          minLength: 1
+          example: "Restaurants"
+        items:
+          type: array
+          description: Menu option items
+          items:
+            oneOf:
+              - type: string
+              - type: object
+                additionalProperties: true
+          example: ["Coffee shops", "Full service"]
+    MenuOptionCreate:
+      allOf:
+        - $ref: '#/components/schemas/MenuOptionBase'
+      example:
+        type: "Restaurants"
+        items: ["Coffee shops", "Full service"]
+    MenuOptionUpdate:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Menu option type
+          maxLength: 255
+          minLength: 1
+        items:
+          type: array
+          description: Menu option items
+          items:
+            type: object
+            additionalProperties: true
+    MenuOption:
+      allOf:
+        - $ref: '#/components/schemas/MenuOptionBase'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+              description: Menu option ID 

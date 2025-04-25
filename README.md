@@ -12,6 +12,8 @@ A FastAPI project for resivate, developed with Python 3.13 with MySQL database i
 - Category management API with CRUD operations
 - Image management API with CRUD operations
 - FAQ management API with CRUD operations
+- Menu Options management API with CRUD operations (supporting complex JSON arrays)
+- Custom SQLAlchemy hybrid property serialization for complex JSON data types
 
 ## Installation
 
@@ -47,12 +49,59 @@ PYTHONPATH=$PWD uvicorn app.main:app --reload
 
 Access the API documentation at `http://localhost:8000/docs`
 
+### Handling Complex JSON Data
+
+The project includes a custom implementation for handling complex JSON data in SQLAlchemy models:
+
+1. The `MenuOption` model demonstrates how to store and retrieve complex JSON arrays using hybrid properties
+2. A custom `__getattribute__` method ensures correct serialization when FastAPI accesses model attributes
+3. Pydantic schemas with proper typing ensure validation and serialization of complex nested structures
+
+This approach allows you to work with nested JSON objects while maintaining type safety and ORM capabilities.
+
+#### Simple Array Example
+
+```python
+# Create a simple menu option with string array items
+menu_option = {
+    "type": "Restaurants",
+    "items": ["Coffee shops", "Full service"]
+}
+```
+
+#### Complex Nested Object Example
+
+```python
+# Create a complex menu option with nested objects
+menu_option = {
+    "type": "MainMenu",
+    "items": [
+        "Products",
+        "Services"
+    ]
+}
+```
+
 ## Testing
 
 Run tests:
 ```bash
 PYTHONPATH=$PWD pytest app/tests/
 ```
+
+### Code Coverage
+
+Generate code coverage report:
+```bash
+PYTHONPATH=$PWD pytest --cov=app app/tests/
+```
+
+For a detailed HTML report:
+```bash
+PYTHONPATH=$PWD pytest --cov=app --cov-report=html app/tests/
+```
+
+This will create a `htmlcov` directory with HTML coverage reports. Open `htmlcov/index.html` in a browser to view the coverage results.
 
 ## Project Structure
 
@@ -63,29 +112,40 @@ resivate/
 │   │   └── endpoints/
 │   │       ├── category.py
 │   │       ├── image.py
-│   │       └── faq.py
+│   │       ├── faq.py
+│   │       ├── menu_option.py
+│   │       └── option.py
 │   ├── core/
 │   │   ├── config.py
 │   │   └── deps.py
 │   ├── database/
 │   │   ├── base.py
+│   │   ├── base_class.py
 │   │   └── session.py
 │   ├── models/
 │   │   ├── category.py
 │   │   ├── image.py
-│   │   └── faq.py
+│   │   ├── faq.py
+│   │   ├── menu_option.py
+│   │   └── option.py
 │   ├── schemas/
 │   │   ├── category.py
 │   │   ├── image.py
-│   │   └── faq.py
+│   │   ├── faq.py
+│   │   ├── menu_option.py
+│   │   └── option.py
 │   ├── docs/
 │   │   ├── openapi.yml
 │   │   ├── openapi_image.yml
-│   │   └── openapi_faq.yml
+│   │   ├── openapi_faq.yml
+│   │   ├── openapi_menu_option.yml
+│   │   └── openapi_option.yml
 │   ├── tests/
 │   │   ├── test_category.py
 │   │   ├── test_image.py
-│   │   └── test_faq.py
+│   │   ├── test_faq.py
+│   │   ├── test_menu_option.py
+│   │   └── test_option.py
 │   └── main.py
 ├── alembic/
 │   ├── versions/
@@ -128,3 +188,45 @@ resivate/
 | POST | `/api/faqs` | Create a new FAQ |
 | PUT | `/api/faqs/{id}` | Update a FAQ |
 | DELETE | `/api/faqs/{id}` | Delete a FAQ |
+
+### Menu Options API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/menu-options` | List all menu options |
+| GET | `/api/menu-options/{id}` | Get a menu option by ID |
+| POST | `/api/menu-options` | Create a new menu option |
+| PUT | `/api/menu-options/{id}` | Update a menu option |
+| DELETE | `/api/menu-options/{id}` | Delete a menu option |
+
+#### Example Menu Option
+
+```json
+{
+  "type": "Restaurants",
+  "items": ["Coffee shops", "Full service"]
+}
+```
+
+This simple array-based menu option can be used to display a list of options for the "Restaurants" category.
+
+### Options API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/options` | List all options |
+| GET | `/api/options/{id}` | Get an option by ID |
+| POST | `/api/options` | Create a new option |
+| PUT | `/api/options/{id}` | Update an option |
+| DELETE | `/api/options/{id}` | Delete an option |
+
+#### Example Option
+
+```json
+{
+  "name": "Configuration",
+  "icon": "settings"
+}
+```
+
+This option structure provides a name and icon pair that can be used for UI elements such as configuration options, settings, or menu items.
