@@ -5,7 +5,7 @@ This module provides database operations for SolutionsData model.
 """
 from typing import List, Optional
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.crud.base import CRUDBase
 from app.models.solutions_data import SolutionsData
@@ -56,7 +56,23 @@ class CRUDSolutionsData(CRUDBase[SolutionsData, SolutionsDataCreate, SolutionsDa
         Returns:
             SolutionsData object with loaded image if found, None otherwise
         """
-        return db.query(self.model).filter(self.model.id == id).first()
+        # Use joinedload to eagerly load the image relationship
+        return db.query(self.model).options(joinedload(self.model.image)).filter(self.model.id == id).first()
+    
+    def get_multi(self, db: Session, *, skip: int = 0, limit: int = 100) -> List[SolutionsData]:
+        """
+        Get multiple SolutionsData records with images preloaded
+        
+        Args:
+            db: Database session
+            skip: Number of records to skip
+            limit: Maximum number of records to return
+            
+        Returns:
+            List of SolutionsData objects with preloaded images
+        """
+        # Override base method to eager load image relationships
+        return db.query(self.model).options(joinedload(self.model.image)).offset(skip).limit(limit).all()
 
 
 solutions_data = CRUDSolutionsData(SolutionsData) 

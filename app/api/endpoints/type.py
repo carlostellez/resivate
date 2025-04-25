@@ -10,6 +10,7 @@ from fastapi import APIRouter, HTTPException, status
 from app.core.deps import DB
 from app.models.type import Type as TypeModel
 from app.schemas.type import TypeSchema, TypeCreate, TypeUpdate
+from app.crud.type import type as type_crud
 
 router = APIRouter()
 
@@ -31,7 +32,7 @@ def read_types(
     Returns:
         List of types
     """
-    types = db.query(TypeModel).offset(skip).limit(limit).all()
+    types = type_crud.get_multi(db=db, skip=skip, limit=limit)
     return [
         {
             "id": type_item.id,
@@ -61,15 +62,9 @@ def create_type(
     Returns:
         Created type
     """
-    type_obj = TypeModel(
-        title=type_in.title,
-        description=type_in.description,
-        features=type_in.features,
-        img_id=type_in.img_id
-    )
-    db.add(type_obj)
-    db.commit()
-    db.refresh(type_obj)
+    type_obj = type_crud.create_with_features(db=db, obj_in=type_in)
+    # Reload to ensure image is loaded
+    type_obj = type_crud.get_with_image(db=db, id=type_obj.id)
     
     return {
         "id": type_obj.id,
@@ -100,7 +95,7 @@ def read_type(
     Raises:
         HTTPException: If type not found
     """
-    type_obj = db.query(TypeModel).filter(TypeModel.id == type_id).first()
+    type_obj = type_crud.get_with_image(db=db, id=type_id)
     if not type_obj:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -138,33 +133,24 @@ def update_type(
     Raises:
         HTTPException: If type not found
     """
-    type_obj = db.query(TypeModel).filter(TypeModel.id == type_id).first()
+    type_obj = type_crud.get_with_image(db=db, id=type_id)
     if not type_obj:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Type not found",
         )
     
-    if type_in.title is not None:
-        type_obj.title = type_in.title
-    if type_in.description is not None:
-        type_obj.description = type_in.description
-    if type_in.features is not None:
-        type_obj.features = type_in.features
-    if type_in.img_id is not None:
-        type_obj.img_id = type_in.img_id
-    
-    db.add(type_obj)
-    db.commit()
-    db.refresh(type_obj)
+    updated_type = type_crud.update(db=db, db_obj=type_obj, obj_in=type_in)
+    # Reload to ensure image is loaded
+    updated_type = type_crud.get_with_image(db=db, id=updated_type.id)
     
     return {
-        "id": type_obj.id,
-        "title": type_obj.title,
-        "description": type_obj.description,
-        "features": type_obj.features,
-        "img_id": type_obj.img_id,
-        "img": type_obj.image
+        "id": updated_type.id,
+        "title": updated_type.title,
+        "description": updated_type.description,
+        "features": updated_type.features,
+        "img_id": updated_type.img_id,
+        "img": updated_type.image
     }
 
 
@@ -184,7 +170,7 @@ def delete_type(
     Raises:
         HTTPException: If type not found
     """
-    type_obj = db.query(TypeModel).filter(TypeModel.id == type_id).first()
+    type_obj = type_crud.get(db=db, id=type_id)
     if not type_obj:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

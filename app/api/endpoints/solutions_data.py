@@ -58,7 +58,9 @@ def create_solutions_data(
     Returns:
         Created solutions data item
     """
-    return solutions_data.create(db=db, obj_in=item_in)
+    item = solutions_data.create(db=db, obj_in=item_in)
+    # Reload the object with image relationship to ensure it's returned in response
+    return solutions_data.get_with_image(db=db, id=item.id)
 
 
 @router.get("/{item_id}", response_model=SolutionsDataSchema)
@@ -110,13 +112,15 @@ def update_solutions_data(
     Raises:
         HTTPException: If solutions data item not found
     """
-    item = solutions_data.get(db=db, id=item_id)
+    item = solutions_data.get_with_image(db=db, id=item_id)
     if not item:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Solutions data not found",
         )
-    return solutions_data.update(db=db, db_obj=item, obj_in=item_in)
+    updated_item = solutions_data.update(db=db, db_obj=item, obj_in=item_in)
+    # Reload to ensure image relationship is included
+    return solutions_data.get_with_image(db=db, id=updated_item.id)
 
 
 @router.delete("/{item_id}", response_model=SolutionsDataSchema)
@@ -138,7 +142,7 @@ def delete_solutions_data(
     Raises:
         HTTPException: If solutions data item not found
     """
-    item = solutions_data.get(db=db, id=item_id)
+    item = solutions_data.get_with_image(db=db, id=item_id)
     if not item:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

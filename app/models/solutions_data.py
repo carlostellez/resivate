@@ -26,5 +26,5 @@ class SolutionsData(Base):
     img_id = Column(Integer, ForeignKey("images.id"), nullable=True)
     pricing = Column(String(100), nullable=True)
     
-    # Relationships
-    image = relationship("Image", foreign_keys=[img_id]) 
+    # Define relationship with proper back_populates using explicit foreign_keys
+    image = relationship("Image", back_populates="solutions", foreign_keys=[img_id])

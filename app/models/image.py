@@ -22,5 +22,6 @@ class Image(Base):
     id = Column(Integer, primary_key=True, index=True)
     src = Column(String(512), nullable=False)
     
-    # Relationships - defined using string reference for Type to avoid circular imports
-    types = relationship("Type", back_populates="image", overlaps="image") 
+    # Relationships - defined with consistent structure
+    types = relationship("Type", back_populates="image", cascade="all, delete-orphan") 
+    solutions = relationship("SolutionsData", back_populates="image", cascade="all, delete-orphan") 
