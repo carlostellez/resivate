@@ -1,0 +1,207 @@
+openapi: 3.0.3
+info:
+  title: Resivate API - Types
+  description: API endpoints for managing service types
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Development server
+paths:
+  /api/types:
+    get:
+      operationId: read_types
+      summary: Get All Types
+      description: Retrieve a list of all service types
+      parameters:
+        - name: skip
+          in: query
+          description: Number of records to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: Maximum number of records to return
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Type'
+    post:
+      operationId: create_type
+      summary: Create Type
+      description: Create a new service type
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TypeCreate'
+      responses:
+        '201':
+          description: Type created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Type'
+  /api/types/{type_id}:
+    get:
+      operationId: read_type
+      summary: Get Type
+      description: Get a specific service type by ID
+      parameters:
+        - name: type_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Type ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Type'
+        '404':
+          description: Type not found
+    put:
+      operationId: update_type
+      summary: Update Type
+      description: Update an existing service type
+      parameters:
+        - name: type_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Type ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TypeUpdate'
+      responses:
+        '200':
+          description: Type updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Type'
+        '404':
+          description: Type not found
+    delete:
+      operationId: delete_type
+      summary: Delete Type
+      description: Delete a service type
+      parameters:
+        - name: type_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Type ID
+      responses:
+        '204':
+          description: Type deleted
+        '404':
+          description: Type not found
+components:
+  schemas:
+    TypeBase:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+          description: Type title
+          maxLength: 100
+          minLength: 1
+          example: "Service Type"
+        description:
+          type: string
+          description: Type description
+          minLength: 1
+          example: "Description of service type"
+        features:
+          type: array
+          description: List of type features
+          items:
+            type: string
+          default: []
+          example: ["Feature 1", "Feature 2", "Feature 3"]
+    TypeCreate:
+      allOf:
+        - $ref: '#/components/schemas/TypeBase'
+        - type: object
+          properties:
+            img_id:
+              type: integer
+              nullable: true
+              description: ID of the associated image
+      example:
+        title: "Service Type"
+        description: "Description of service type"
+        features: ["Feature 1", "Feature 2", "Feature 3"]
+        img_id: 1
+    TypeUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Type title
+          maxLength: 100
+          minLength: 1
+        description:
+          type: string
+          description: Type description
+          minLength: 1
+        features:
+          type: array
+          description: List of type features
+          items:
+            type: string
+        img_id:
+          type: integer
+          nullable: true
+          description: ID of the associated image
+    Type:
+      allOf:
+        - $ref: '#/components/schemas/TypeBase'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+              description: Type ID
+            img_id:
+              type: integer
+              nullable: true
+              description: ID of the associated image
+            img:
+              $ref: '#/components/schemas/Image'
+    Image:
+      type: object
+      required:
+        - id
+        - src
+      properties:
+        id:
+          type: integer
+          description: Image ID
+        src:
+          type: string
+          description: Image source URL or path 

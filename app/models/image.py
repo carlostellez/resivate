@@ -4,6 +4,7 @@ Image model module.
 This module defines the Image model used to store image data in the database.
 """
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 
 from app.database.base import Base
 
@@ -19,4 +20,7 @@ class Image(Base):
     __tablename__ = "images"
 
     id = Column(Integer, primary_key=True, index=True)
-    src = Column(String(512), nullable=False) 
+    src = Column(String(512), nullable=False)
+    
+    # Relationships
+    types = relationship("Type", back_populates="image") 

@@ -1,0 +1,204 @@
+openapi: 3.0.3
+info:
+  title: Resivate API - Plans
+  description: API endpoints for managing pricing plans
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Development server
+paths:
+  /api/plans:
+    get:
+      operationId: read_plans
+      summary: Get All Plans
+      description: Retrieve a list of all pricing plans
+      parameters:
+        - name: skip
+          in: query
+          description: Number of records to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: Maximum number of records to return
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Plan'
+    post:
+      operationId: create_plan
+      summary: Create Plan
+      description: Create a new pricing plan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanCreate'
+      responses:
+        '201':
+          description: Plan created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+        '422':
+          description: Validation error
+  /api/plans/{plan_id}:
+    get:
+      operationId: read_plan
+      summary: Get Plan
+      description: Get a specific pricing plan by ID
+      parameters:
+        - name: plan_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Plan ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+        '404':
+          description: Plan not found
+    put:
+      operationId: update_plan
+      summary: Update Plan
+      description: Update an existing pricing plan
+      parameters:
+        - name: plan_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Plan ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanUpdate'
+      responses:
+        '200':
+          description: Plan updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+        '404':
+          description: Plan not found
+        '422':
+          description: Validation error
+    delete:
+      operationId: delete_plan
+      summary: Delete Plan
+      description: Delete a pricing plan
+      parameters:
+        - name: plan_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Plan ID
+      responses:
+        '204':
+          description: Plan deleted
+        '404':
+          description: Plan not found
+components:
+  schemas:
+    PlanBase:
+      type: object
+      required:
+        - title
+        - description
+        - price
+        - btnMessage
+      properties:
+        title:
+          type: string
+          description: Plan title
+          maxLength: 100
+          minLength: 1
+          example: "Basic Plan"
+        description:
+          type: string
+          description: Plan description
+          minLength: 1
+          example: "Basic features for small businesses"
+        price:
+          type: number
+          format: float
+          description: Plan price
+          minimum: 0
+          example: 19.99
+        btnMessage:
+          type: string
+          description: Button message text
+          maxLength: 255
+          minLength: 1
+          example: "Get Started"
+        blueBtn:
+          type: boolean
+          description: Whether the button should be blue
+          default: false
+          example: true
+    PlanCreate:
+      allOf:
+        - $ref: '#/components/schemas/PlanBase'
+      example:
+        title: "Basic Plan"
+        description: "Basic features for small businesses"
+        price: 19.99
+        btnMessage: "Get Started"
+        blueBtn: true
+    PlanUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Plan title
+          maxLength: 100
+          minLength: 1
+        description:
+          type: string
+          description: Plan description
+          minLength: 1
+        price:
+          type: number
+          format: float
+          description: Plan price
+          minimum: 0
+        btnMessage:
+          type: string
+          description: Button message text
+          maxLength: 255
+          minLength: 1
+        blueBtn:
+          type: boolean
+          description: Whether the button should be blue
+    Plan:
+      allOf:
+        - $ref: '#/components/schemas/PlanBase'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+              description: Plan ID 
